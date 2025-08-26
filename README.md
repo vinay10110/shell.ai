@@ -1,93 +1,128 @@
-Fuel Blend Properties Prediction – Shell.ai Hackathon 2025
-📄 Overview
-This repository contains the solution for the Shell.ai Hackathon 2025 challenge: Fuel Blend Properties Prediction.
-The goal is to build a machine learning model that predicts the final properties of complex fuel blends given their constituent components and proportions.
+# Shell.ai 6th Edition — Fuel Blend Property Prediction
 
-This project focuses on creating an accurate and generalizable predictive model that can help guide the design of sustainable fuels without compromising on safety, performance, and environmental goals.
+Predicting the properties of fuel blends formed by mixing sustainable and conventional components.
 
-📊 Problem Statement
-The challenge is to:
+- Developed during Shell.ai Hackathon (6th year edition)
+- Challenge: predict 10 target blend properties from component fractions and per-component properties
+- Goal: help industry rapidly evaluate and optimize fuel blends for safety, performance, sustainability, and cost-efficiency
+- Evaluation metric: MAPE (Mean Absolute Percentage Error)
 
-Predict resultant blend properties from the composition of different sustainable and conventional fuels.
+---
 
-Handle datasets with scaled property values and no explicit property names (to ensure fair competition).
+## Repository Structure
 
-Build a model capable of generalizing to unseen blend compositions in the test dataset.
+- `dataset/`
+  - `train.csv` — training data with features and target columns
+  - `test.csv` — test data with an `ID` column and features (no targets)
+- `result/`
+  - `submission_catboost.csv` — sample submission with predictions for 10 targets
+  - `plots/`
+    - `Actuals vs Predicted.png`
+    - `residuals.png`
+- `BlendProperty.ipynb` — notebook for exploration/modeling
+- `requirements.txt` — Python dependencies
 
-📂 Repository Structure
-bash
-Copy
-Edit
-.
-├── train.csv         # Training dataset containing blend compositions and target properties
-├── test.csv          # Test dataset containing blend compositions without target properties
-├── submission.csv    # Sample submission file (prediction format)
-├── BlendProperty.ipynb # Main notebook with data processing, model building, and prediction
-└── README.md         # Project documentation
-🛠️ Approach
-Data Exploration
+---
 
-Load and inspect the datasets (train.csv, test.csv).
+## Data Schema
 
-Check missing values, feature distributions, and correlations.
+Each row represents a fuel blend composed of 5 components.
 
-Preprocessing
+- Features (55 total):
+  - Fractions: `Component{1..5}_fraction` (5 cols)
+  - Per-component properties: `Component{1..5}_Property{1..10}` (5 × 10 = 50 cols)
+- Targets (10 total, train only): `BlendProperty{1..10}`
+- Test-only ID: `ID`
 
-Scale/normalize features if necessary.
+Example (columns abbreviated):
+```
+Component1_fraction, ..., Component5_fraction,
+Component1_Property1, ..., Component5_Property10,
+[BlendProperty1, ..., BlendProperty10]  # train only
+```
 
-Handle any outliers or anomalies.
+---
 
-Modeling
+## Environment Setup
 
-Experiment with multiple regression models (e.g., LightGBM, XGBoost, CatBoost, Random Forest).
+- Python 3.x
+- Install dependencies:
 
-Apply blending/stacking techniques to combine predictions from multiple models for improved performance.
-
-Evaluation
-
-Cross-validation to assess model stability.
-
-Optimize hyperparameters for best generalization.
-
-Prediction & Submission
-
-Generate predictions for test.csv.
-
-Save results in the format required for submission.csv.
-
-📦 Requirements
-Make sure you have the following Python packages installed:
-
-bash
-Copy
-Edit
-pip install pandas numpy scikit-learn xgboost lightgbm catboost matplotlib seaborn
-▶️ How to Run
-Clone the repository:
-
-bash
-Copy
-Edit
-git clone <repo_url>
-cd <repo_name>
-Install dependencies:
-
-bash
-Copy
-Edit
+```bash
 pip install -r requirements.txt
-(Create requirements.txt from the list in the section above.)
+```
 
-Open and run the notebook:
+Dependencies (from `requirements.txt`):
+- pandas, scikit-learn, matplotlib
+- catboost, xgboost, lightgbm
 
-bash
-Copy
-Edit
-jupyter notebook BlendProperty.ipynb
-The notebook will:
+---
 
-Load the data
+## Modeling and Evaluation
 
-Train and evaluate models
+- Primary metric: MAPE
+  - MAPE = mean(|(y_true − y_pred) / y_true|) × 100%
+- Multi-target regression: predict `BlendProperty1..10` simultaneously or independently.
+- This repo includes a CatBoost-based submission (`result/submission_catboost.csv`). Other gradient boosting models (XGBoost/LightGBM) and linear baselines can be used as alternatives.
 
-Produce predictions in submission.csv
+Plots (from a sample model fit):
+
+- Actual vs Predicted
+  
+  ![Actuals vs Predicted](result/plots/Actuals%20vs%20Predicted.png)
+
+- Residuals
+  
+  ![Residuals](result/plots/residuals.png)
+
+---
+
+## Quick Start
+
+1. Place data in `dataset/` with the exact filenames:
+   - `dataset/train.csv`
+   - `dataset/test.csv`
+2. Create and activate a virtual environment (optional) and install requirements:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Open `BlendProperty.ipynb` to explore, train, and generate predictions.
+4. Save predictions in the submission format (see below) to `result/submission_<model>.csv`.
+
+---
+
+## Submission Format
+
+CSV with the following columns (header required):
+
+```
+ID,BlendProperty1,BlendProperty2,BlendProperty3,BlendProperty4,BlendProperty5,BlendProperty6,BlendProperty7,BlendProperty8,BlendProperty9,BlendProperty10
+```
+
+An example file is provided at `result/submission_catboost.csv`.
+
+---
+
+## Reproducibility Tips
+
+- Use a fixed random seed for data splits and model training.
+- Consider stratified or grouped splits if applicable to your data generation process.
+- Track per-target MAPE and overall average MAPE.
+
+---
+
+## Potential Improvements
+
+- Feature engineering: interaction terms between fractions and properties, normalized/ratio features.
+- Multi-target models vs. per-target specialized models; ensembling.
+- Error analysis per target (where MAPE is high) and per composition region.
+- Calibration and constraints (e.g., physical plausibility checks on predictions).
+
+---
+
+## Acknowledgments
+
+This project was developed for the Shell.ai Hackathon (6th year edition). Many thanks to the organizers and community.
+
+---
+
