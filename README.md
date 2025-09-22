@@ -2,7 +2,6 @@
 
 Predicting the properties of fuel blends formed by mixing sustainable and conventional components.
 
-- Developed during Shell.ai Hackathon (6th year edition)
 - Challenge: predict 10 target blend properties from component fractions and per-component properties
 - Goal: help industry rapidly evaluate and optimize fuel blends for safety, performance, sustainability, and cost-efficiency
 - Evaluation metric: MAPE (Mean Absolute Percentage Error)
@@ -101,28 +100,9 @@ ID,BlendProperty1,BlendProperty2,BlendProperty3,BlendProperty4,BlendProperty5,Bl
 
 An example file is provided at `result/submission_catboost.csv`.
 
----
-
-## Reproducibility Tips
-
-- Use a fixed random seed for data splits and model training.
-- Consider stratified or grouped splits if applicable to your data generation process.
-- Track per-target MAPE and overall average MAPE.
-
----
-
-## Potential Improvements
-
-- Feature engineering: interaction terms between fractions and properties, normalized/ratio features.
-- Multi-target models vs. per-target specialized models; ensembling.
-- Error analysis per target (where MAPE is high) and per composition region.
-- Calibration and constraints (e.g., physical plausibility checks on predictions).
-
----
-
 ## Acknowledgments
 
-This project was developed for the Shell.ai Hackathon (6th year edition). Many thanks to the organizers and community.
+This project was developed for the Shell.ai Hackathon (6th year edition)
 
 ---
 
